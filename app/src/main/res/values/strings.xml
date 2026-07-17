@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Playlist Maker</string>
+    <string name="app_name" translatable="false">Playlist maker</string>
     <string name="search_button">Поиск</string>
     <string name="library_button">Медиатека</string>
     <string name="settings_button">Настройки</string>
