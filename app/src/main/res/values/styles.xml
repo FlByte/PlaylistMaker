@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="iconTint">@color/main_text</item>
+        <item name="android:textColor">@color/main_text</item>
+        <item name="cornerRadius">@dimen/main_button_radius</item>
+        <item name="backgroundTint">@color/main_title</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:layout_marginBottom">@dimen/main_button_margin</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textSize">@dimen/main_button_text</item>
+        <item name="android:layout_marginStart">@dimen/main_button_margin</item>
+        <item name="android:layout_marginEnd">@dimen/main_button_margin</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="MainTitleStyle">
+        <item name="android:textColor">@color/main_title</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textSize">@dimen/main_button_text</item>
+        <item name="android:layout_marginStart">@dimen/main_button_margin</item>
+        <item name="android:layout_marginTop">14dp</item>
+        <item name="android:layout_marginBottom">40dp</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="SettingsButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:paddingStart">@dimen/settings_button_padding</item>
+        <item name="android:paddingEnd">@dimen/settings_button_padding</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/settings_button_height</item>
+        <item name="android:textSize">@dimen/settings_text</item>
+        <item name="android:textColor">@color/settings_text</item>
+        <item name="android:backgroundTint">@color/settings_background</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="iconGravity">end</item>
+        <item name="iconTint">@color/settings_icon</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+    
+    <style name="BackButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">@dimen/back_button</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingStart">@dimen/settings_button_padding</item>
+        <item name="android:paddingEnd">@dimen/settings_button_padding</item>
+        <item name="android:backgroundTint">@color/settings_background</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconTint">@color/settings_title_text</item>
+        <item name="icon">@drawable/arrow_back</item>
+    </style>
+
+    <style name="BackButtonTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/settings_title_text</item>
+        <item name="android:textSize">@dimen/main_button_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/back_button_padding</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
+</resources>

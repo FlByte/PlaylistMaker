@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="settings_text">#FFFFFFFF</color>
+    <color name="main_title">#FFFFFFFF</color>
+    <color name="settings_background">#1A1B22</color>
+    <color name="main_background">#1A1B22</color>
+    <color name="main_text">#1A1B22</color>
+    <color name="settings_title_text">#FFFFFFFF</color>
+    <color name="settings_icon">#FFFFFFFF</color>
+    <color name="search_edit_frame">#FFFFFF</color>
+    <color name="search_edit_text">#1A1B22</color>
+    <color name="search_edit_write">#FF000000</color>
+</resources>
