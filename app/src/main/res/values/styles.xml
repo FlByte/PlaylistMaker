@@ -77,4 +77,13 @@
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
     </style>
+
+    <style name="SearchGroupName">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/music_card_text</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>

@@ -10,4 +10,5 @@
     <color name="search_edit_frame">#FFFFFF</color>
     <color name="search_edit_text">#1A1B22</color>
     <color name="search_edit_write">#FF000000</color>
+    <color name="music_card_text">#FFFFFFFF</color>
 </resources>

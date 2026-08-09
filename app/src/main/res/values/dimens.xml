@@ -9,4 +9,6 @@
     <dimen name="settings_text">16sp</dimen>
     <dimen name="back_button">56dp</dimen>
     <dimen name="search_edit_margin">8dp</dimen>
+    <dimen name="music_card_padding">8dp</dimen>
+    <dimen name="music_author_height">13dp</dimen>
 </resources>
