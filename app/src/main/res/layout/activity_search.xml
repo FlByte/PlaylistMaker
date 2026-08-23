@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/search_edit_margin"
-        android:layout_marginBottom="@dimen/search_edit_margin"
+        android:layout_marginBottom="@dimen/main_button_margin"
         android:layout_marginStart="@dimen/main_button_margin"
         android:layout_marginEnd="@dimen/main_button_margin"
         android:background="@drawable/search_edit_frame"
@@ -72,5 +72,9 @@
 
     </LinearLayout>
 
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/music_recycler_view"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </LinearLayout>
