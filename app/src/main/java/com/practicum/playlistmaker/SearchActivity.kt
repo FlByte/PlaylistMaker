@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -19,10 +20,40 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
 
     private var searchString: String = SEARCH_STRING
+
+    private var iTunesBaseUrl = "https://itunes.apple.com"
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(iTunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val ITunesService = retrofit.create(ITunesApi::class.java)
+
+    private lateinit var backButton: Button
+    private lateinit var inputEditText: EditText
+    private lateinit var clearButton: ImageView
+    private lateinit var musicRecyclerView: RecyclerView
+    private lateinit var errorImage: ImageView
+    private lateinit var errorText: TextView
+    private lateinit var reloadButton: Button
+
+    private val trackList = ArrayList<Track>()
+    private val adapter = MusicAdapter(trackList)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,19 +65,31 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        val backButton = findViewById<Button>(R.id.back_button)
+        backButton = findViewById(R.id.back_button)
+        errorImage = findViewById(R.id.error_image)
+        errorText = findViewById(R.id.error_text)
+        reloadButton = findViewById(R.id.reload_button)
 
         backButton.setOnClickListener {
             finish()
         }
 
-        val inputEditText = findViewById<EditText>(R.id.search_edit_frame)
-        val clearButton = findViewById<ImageView>(R.id.clear_text)
+        inputEditText = findViewById(R.id.search_edit_frame)
+        clearButton = findViewById(R.id.clear_text)
 
         clearButton.setOnClickListener { view ->
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
             inputEditText.setText("")
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            errorText.visibility = View.GONE
+            errorImage.visibility = View.GONE
+            reloadButton.visibility = View.GONE
+        }
+
+        reloadButton.setOnClickListener {
+            findTracks()
         }
 
         inputEditText.doOnTextChanged { text, _, _, _ ->
@@ -54,24 +97,72 @@ class SearchActivity : AppCompatActivity() {
             searchString = text.toString()
         }
 
-        val musicRecyclerView = findViewById<RecyclerView>(R.id.music_recycler_view)
+        musicRecyclerView = findViewById(R.id.music_recycler_view)
 
-        val trackList = listOf(
-            Track("Smells Like Teen Spirit", "Nirvana", "5:01",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"),
-            Track("Billie Jean", "Michael Jackson", "4:35",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"),
-            Track("Stayin' Alive", "Bee Gees", "4:10",
-                "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"),
-            Track("Whole Lotta Love", "Led Zeppelin", "5:33",
-                "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"),
-            Track("Sweet Child O'Mine", "Guns N' Roses", "5:03",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"),
-        )
-
-        val adapter = MusicAdapter(trackList)
         musicRecyclerView.adapter = adapter
 
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                findTracks()
+                true
+            }
+            false
+        }
+    }
+
+    private fun findTracks() {
+        val query = inputEditText.text.toString().trim()
+        if (query.isNotEmpty() && query.length <= 200) {
+            errorText.visibility = View.GONE
+            errorImage.visibility = View.GONE
+            reloadButton.visibility = View.GONE
+            ITunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackResponse> {
+                override fun onResponse(
+                    call: Call<TrackResponse>,
+                    response: Response<TrackResponse>
+                ) {
+                    if (response.code() == 200) {
+                        trackList.clear()
+                        if (response.body()?.results?.isNotEmpty() == true) {
+                            trackList.addAll(response.body()?.results!!)
+                            adapter.notifyDataSetChanged()
+                        }
+                        if (trackList.isEmpty()) {
+                            showMessage(getString(R.string.nothing_found), false)
+                        }
+                    } else {
+                        showMessage(getString(R.string.ethernet_error), true)
+                    }
+                }
+
+                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    showMessage(getString(R.string.ethernet_error), true)
+                }
+            })
+        } else if (query.length > 200) {
+            showMessage(getString(R.string.to_long_query), false)
+        }
+    }
+
+    private fun showMessage(text: String, ethernetError: Boolean) {
+        if (text.isNotEmpty()) {
+            errorText.visibility = View.VISIBLE
+            errorImage.visibility = View.VISIBLE
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            errorText.text = text
+            if (ethernetError) {
+                reloadButton.visibility = View.VISIBLE
+                errorImage.setImageResource(R.drawable.ethernet_error)
+            } else {
+                reloadButton.visibility = View.GONE
+                errorImage.setImageResource(R.drawable.nothing_found)
+            }
+        } else {
+            errorText.visibility = View.GONE
+            errorImage.visibility = View.GONE
+            reloadButton.visibility = View.GONE
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -101,9 +192,19 @@ class SearchActivity : AppCompatActivity() {
     data class Track (
         val trackName: String,
         val artistName: String,
-        val trackTime: String,
+        val trackTimeMillis: Long,
         val artworkUrl100: String,
     )
+
+    class TrackResponse (
+        val resultCount: Int,
+        val results: ArrayList<Track>
+    )
+
+    interface ITunesApi {
+        @GET("/search")
+        fun search(@Query("term") text: String) : Call<TrackResponse>
+    }
 
     class MusicViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val trackName = itemView.findViewById<TextView>(R.id.track_name)
@@ -114,7 +215,7 @@ class SearchActivity : AppCompatActivity() {
         fun bind(model: Track) {
             trackName.text = model.trackName
             artistName.text = model.artistName
-            trackTime.text = model.trackTime
+            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
             Glide.with(itemView)
                 .load(model.artworkUrl100)
                 .placeholder(R.drawable.music_placeholder)

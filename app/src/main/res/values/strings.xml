@@ -7,6 +7,7 @@
     <string name="share_app">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="reload">Обновить</string>
     <string name="search_placeholder">Тут будет поиск</string>
     <string name="library_placeholder">Тут будет медиатека</string>
     <string name="practicum_link">practicum.yandex.ru/learn/android-developer</string>
@@ -14,4 +15,7 @@
     <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="ethernet_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="to_long_query">Запрос слишком длинный</string>
 </resources>
