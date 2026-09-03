@@ -30,6 +30,8 @@ import retrofit2.http.Query
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+const val HISTORY_PREFERENCES = "search_history"
+
 class SearchActivity : AppCompatActivity() {
 
     private var searchString: String = SEARCH_STRING
@@ -45,15 +47,18 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var backButton: Button
     private lateinit var inputEditText: EditText
-    private lateinit var clearButton: ImageView
+    private lateinit var clearTextButton: ImageView
     private lateinit var musicRecyclerView: RecyclerView
     private lateinit var errorImage: ImageView
     private lateinit var errorText: TextView
     private lateinit var reloadButton: Button
-
+    private lateinit var clearHistoryButton: Button
+    private lateinit var historyText: TextView
+    private lateinit var searchHistory: SearchHistory
     private val trackList = ArrayList<Track>()
-    private val adapter = MusicAdapter(trackList)
-
+    private val searchAdapter = MusicAdapter(trackList)
+    private val historyList = ArrayList<Track>()
+    private val historyAdapter = MusicAdapter(historyList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,24 +70,30 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+        val sharedPref = getSharedPreferences(HISTORY_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPref)
+
         backButton = findViewById(R.id.back_button)
         errorImage = findViewById(R.id.error_image)
         errorText = findViewById(R.id.error_text)
         reloadButton = findViewById(R.id.reload_button)
+        clearHistoryButton = findViewById(R.id.clear_history)
+        historyText = findViewById(R.id.history_text)
 
         backButton.setOnClickListener {
             finish()
         }
 
         inputEditText = findViewById(R.id.search_edit_frame)
-        clearButton = findViewById(R.id.clear_text)
+        clearTextButton = findViewById(R.id.clear_text)
 
-        clearButton.setOnClickListener { view ->
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        clearTextButton.setOnClickListener { view ->
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
             inputEditText.setText("")
+
             trackList.clear()
-            adapter.notifyDataSetChanged()
+            searchAdapter.notifyDataSetChanged()
             errorText.visibility = View.GONE
             errorImage.visibility = View.GONE
             reloadButton.visibility = View.GONE
@@ -92,14 +103,46 @@ class SearchActivity : AppCompatActivity() {
             findTracks()
         }
 
+        clearHistoryButton.setOnClickListener {
+            historyList.clear()
+            searchHistory.clearHistory()
+            historyAdapter.notifyDataSetChanged()
+            clearHistoryButton.visibility = View.GONE
+            historyText.visibility = View.GONE
+        }
+
         inputEditText.doOnTextChanged { text, _, _, _ ->
-            clearButton.visibility = clearButtonVisibility(text)
+            clearTextButton.visibility = clearButtonVisibility(text)
             searchString = text.toString()
+
+            if (inputEditText.hasFocus() && inputEditText.text.isEmpty()) {
+                showHistory()
+                trackList.clear()
+                searchAdapter.notifyDataSetChanged()
+            } else {
+                hideHistory()
+            }
+        }
+
+        inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty()) {
+                showHistory()
+            } else {
+                hideHistory()
+            }
+        }
+
+        searchAdapter.setOnItemClickListener { track ->
+            searchHistory.addTrackToHistory(track)
+        }
+        historyAdapter.setOnItemClickListener { track ->
+            searchHistory.addTrackToHistory(track)
+            showHistory()
         }
 
         musicRecyclerView = findViewById(R.id.music_recycler_view)
 
-        musicRecyclerView.adapter = adapter
+        musicRecyclerView.adapter = searchAdapter
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -110,12 +153,45 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun showHistory() {
+        val history = searchHistory.getHistory()
+        historyList.clear()
+        historyList.addAll(history)
+        historyAdapter.notifyDataSetChanged()
+
+        if (history.isNotEmpty()) {
+            historyText.visibility = View.VISIBLE
+            clearHistoryButton.visibility = View.VISIBLE
+            errorText.visibility = View.GONE
+            errorImage.visibility = View.GONE
+            reloadButton.visibility = View.GONE
+
+            musicRecyclerView.adapter = historyAdapter
+
+
+        } else {
+            hideHistory()
+        }
+    }
+
+    private fun hideHistory() {
+        historyText.visibility = View.GONE
+        clearHistoryButton.visibility = View.GONE
+        errorText.visibility = View.GONE
+        errorImage.visibility = View.GONE
+        reloadButton.visibility = View.GONE
+
+        musicRecyclerView.adapter = searchAdapter
+    }
+
     private fun findTracks() {
         val query = inputEditText.text.toString().trim()
         if (query.isNotEmpty() && query.length <= 200) {
             errorText.visibility = View.GONE
             errorImage.visibility = View.GONE
             reloadButton.visibility = View.GONE
+            historyText.visibility = View.GONE
+            clearHistoryButton.visibility = View.GONE
             ITunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
@@ -125,7 +201,7 @@ class SearchActivity : AppCompatActivity() {
                         trackList.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
                             trackList.addAll(response.body()?.results!!)
-                            adapter.notifyDataSetChanged()
+                            searchAdapter.notifyDataSetChanged()
                         }
                         if (trackList.isEmpty()) {
                             showMessage(getString(R.string.nothing_found), false)
@@ -137,6 +213,7 @@ class SearchActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                     showMessage(getString(R.string.ethernet_error), true)
+                    t.printStackTrace()
                 }
             })
         } else if (query.length > 200) {
@@ -148,9 +225,15 @@ class SearchActivity : AppCompatActivity() {
         if (text.isNotEmpty()) {
             errorText.visibility = View.VISIBLE
             errorImage.visibility = View.VISIBLE
-            trackList.clear()
-            adapter.notifyDataSetChanged()
+            clearHistoryButton.visibility = View.GONE
+            historyText.visibility = View.GONE
             errorText.text = text
+
+            trackList.clear()
+            historyList.clear()
+            searchAdapter.notifyDataSetChanged()
+            historyAdapter.notifyDataSetChanged()
+
             if (ethernetError) {
                 reloadButton.visibility = View.VISIBLE
                 errorImage.setImageResource(R.drawable.ethernet_error)
@@ -189,13 +272,6 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_STRING = ""
     }
 
-    data class Track (
-        val trackName: String,
-        val artistName: String,
-        val trackTimeMillis: Long,
-        val artworkUrl100: String,
-    )
-
     class TrackResponse (
         val resultCount: Int,
         val results: ArrayList<Track>
@@ -203,34 +279,10 @@ class SearchActivity : AppCompatActivity() {
 
     interface ITunesApi {
         @GET("/search")
-        fun search(@Query("term") text: String) : Call<TrackResponse>
+        fun search(@Query("term") text: String): Call<TrackResponse>
     }
 
-    class MusicViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val trackName = itemView.findViewById<TextView>(R.id.track_name)
-        private val artistName = itemView.findViewById<TextView>(R.id.artist_name)
-        private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
-        private val albumImg = itemView.findViewById<ImageView>(R.id.album_img)
-
-        fun bind(model: Track) {
-            trackName.text = model.trackName
-            artistName.text = model.artistName
-            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
-            Glide.with(itemView)
-                .load(model.artworkUrl100)
-                .placeholder(R.drawable.music_placeholder)
-                .centerCrop()
-                .transform(RoundedCorners(
-                    TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        2f,
-                        itemView.context.resources.displayMetrics).toInt()
-                ))
-                .into(albumImg)
-        }
-    }
-
-    class MusicAdapter (private val track: List<Track>) : RecyclerView.Adapter<MusicViewHolder>() {
+    class MusicAdapter (private val track: List<Track>) : RecyclerView.Adapter<MusicAdapter.MusicViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.music_card, parent, false)
             return MusicViewHolder(view)
@@ -243,6 +295,45 @@ class SearchActivity : AppCompatActivity() {
         override fun getItemCount(): Int {
             return track.size
         }
-    }
 
+        private var onItemClickListener: ((Track) -> Unit)? = null
+
+        fun setOnItemClickListener(listener: (Track) -> Unit) {
+            onItemClickListener = listener
+        }
+
+        inner class MusicViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+            private val trackName = itemView.findViewById<TextView>(R.id.track_name)
+            private val artistName = itemView.findViewById<TextView>(R.id.artist_name)
+            private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
+            private val albumImg = itemView.findViewById<ImageView>(R.id.album_img)
+
+            init {
+                itemView.setOnClickListener {
+                    val position = bindingAdapterPosition
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        onItemClickListener?.invoke(track[position])
+                    }
+                }
+            }
+
+            fun bind(model: Track) {
+                trackName.text = model.trackName
+                artistName.text = model.artistName
+                trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+                Glide.with(itemView)
+                    .load(model.artworkUrl100)
+                    .placeholder(R.drawable.music_placeholder)
+                    .centerCrop()
+                    .transform(RoundedCorners(
+                        TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            2f,
+                            itemView.context.resources.displayMetrics).toInt()
+                    ))
+                    .into(albumImg)
+            }
+        }
+    }
 }
