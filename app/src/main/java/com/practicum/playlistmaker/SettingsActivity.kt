@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -27,10 +28,18 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-
+        val themeSwitcher = findViewById<SwitchCompat>(R.id.theme_switcher)
         val shareButton = findViewById<Button>(R.id.share_button)
         val supportButton = findViewById<Button>(R.id.support_button)
         val userAgreement = findViewById<Button>(R.id.user_agreement_button)
+
+        val app = applicationContext as App
+
+        themeSwitcher.isChecked = app.darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            app.switchTheme(checked)
+        }
 
         shareButton.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
@@ -56,4 +65,6 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(browseIntent)
         }
     }
+
+
 }
