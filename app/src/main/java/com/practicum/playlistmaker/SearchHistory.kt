@@ -2,23 +2,27 @@ package com.practicum.playlistmaker
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class SearchHistory (private val historyPrefs: SharedPreferences) {
     private val HISTORY_KEY = "history_tracks"
     private val MAX_HISTORY_SIZE = 10
 
+    private val gson = Gson()
+
     fun saveHistory(tracks: List<Track>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         historyPrefs.edit().putString(HISTORY_KEY, json).apply()
     }
 
-    fun getHistory(): Array<Track> {
+    fun getHistory(): List<Track> {
         val json = historyPrefs.getString(HISTORY_KEY, null)
 
         if (json != null) {
-            return Gson().fromJson(json, Array<Track>::class.java)
+            val type = object : TypeToken<List<Track>>() {}.type
+            return gson.fromJson(json, type)
         } else {
-            return emptyArray()
+            return listOf()
         }
     }
 

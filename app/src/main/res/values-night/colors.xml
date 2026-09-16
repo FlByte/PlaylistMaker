@@ -13,4 +13,5 @@
     <color name="music_card_text">#FFFFFFFF</color>
     <color name="placeholder_text">#FFFFFFFF</color>
     <color name="placeholder_button">#1A1B22</color>
+    <color name="player_secondary_buttons">#40FFFFFF</color>
 </resources>

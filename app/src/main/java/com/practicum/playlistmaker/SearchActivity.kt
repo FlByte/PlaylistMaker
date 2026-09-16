@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -134,10 +134,20 @@ class SearchActivity : AppCompatActivity() {
 
         searchAdapter.setOnItemClickListener { track ->
             searchHistory.addTrackToHistory(track)
+
+            val displayIntent = Intent(this, PlayerActivity::class.java).apply {
+                putExtra("track", track)
+            }
+            startActivity(displayIntent)
         }
         historyAdapter.setOnItemClickListener { track ->
             searchHistory.addTrackToHistory(track)
             showHistory()
+
+            val displayIntent = Intent(this, PlayerActivity::class.java).apply {
+                putExtra("track", track)
+            }
+            startActivity(displayIntent)
         }
 
         musicRecyclerView = findViewById(R.id.music_recycler_view)

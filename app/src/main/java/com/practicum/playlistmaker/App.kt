@@ -21,7 +21,7 @@ class App : Application() {
 
     }
 
-    var darkTheme = false
+    private var darkTheme = false
 
     fun switchTheme(darkThemeEnabled: Boolean){
         darkTheme = darkThemeEnabled
