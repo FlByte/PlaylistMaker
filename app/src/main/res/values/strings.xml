@@ -8,6 +8,8 @@
     <string name="support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="reload">Обновить</string>
+    <string name="clear">Очистить историю</string>
+    <string name="history">Вы искали</string>
     <string name="search_placeholder">Тут будет поиск</string>
     <string name="library_placeholder">Тут будет медиатека</string>
     <string name="practicum_link">practicum.yandex.ru/learn/android-developer</string>
