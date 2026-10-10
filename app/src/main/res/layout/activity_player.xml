@@ -11,53 +11,53 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftBorder"
+            android:id="@+id/left_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="16dp"/>
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightBorder"
+            android:id="@+id/right_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="16dp"/>
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/mainLeftBorder"
+            android:id="@+id/main_left_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="24dp"/>
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/mainRightBorder"
+            android:id="@+id/main_right_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="24dp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/backButton"
+            android:id="@+id/player_back_button"
             style="@style/BackButton"
             android:layout_height="@dimen/settings_button_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/albumImg"
+            android:id="@+id/player_album_img"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="26dp"
             app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toStartOf="@+id/mainRightBorder"
-            app:layout_constraintStart_toStartOf="@+id/mainLeftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/backButton"
+            app:layout_constraintEnd_toStartOf="@+id/main_right_border"
+            app:layout_constraintStart_toStartOf="@+id/main_left_border"
+            app:layout_constraintTop_toBottomOf="@+id/player_back_button"
             android:src="@drawable/music_placeholder"/>
 
         <TextView
-            android:id="@+id/trackName"
+            android:id="@+id/player_track_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -68,13 +68,13 @@
             android:textColor="@color/placeholder_text"
             android:textFontWeight="400"
             android:textSize="22sp"
-            app:layout_constraintEnd_toStartOf="@+id/mainRightBorder"
-            app:layout_constraintStart_toStartOf="@+id/mainLeftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/albumImg"
+            app:layout_constraintEnd_toStartOf="@+id/main_right_border"
+            app:layout_constraintStart_toStartOf="@+id/main_left_border"
+            app:layout_constraintTop_toBottomOf="@+id/player_album_img"
             tools:text="Here Comes The Sun" />
 
         <TextView
-            android:id="@+id/artistName"
+            android:id="@+id/player_artist_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -85,36 +85,36 @@
             android:textColor="@color/placeholder_text"
             android:textFontWeight="400"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/mainRightBorder"
-            app:layout_constraintStart_toStartOf="@+id/mainLeftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/trackName"
+            app:layout_constraintEnd_toStartOf="@+id/main_right_border"
+            app:layout_constraintStart_toStartOf="@+id/main_left_border"
+            app:layout_constraintTop_toBottomOf="@+id/player_track_name"
             tools:text="The Beatles" />
 
         <ImageButton
-            android:id="@+id/playButon"
+            android:id="@+id/player_play_buton"
             android:layout_width="83dp"
             android:layout_height="83dp"
             android:layout_marginTop="38dp"
             android:background="@drawable/play"
             android:backgroundTint="@color/settings_title_text"
-            app:layout_constraintEnd_toStartOf="@+id/mainRightBorder"
-            app:layout_constraintStart_toStartOf="@+id/mainLeftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/artistName" />
+            app:layout_constraintEnd_toStartOf="@+id/main_right_border"
+            app:layout_constraintStart_toStartOf="@+id/main_left_border"
+            app:layout_constraintTop_toBottomOf="@+id/player_artist_name" />
 
         <ImageButton
-            android:id="@+id/addToPlaylistButon"
+            android:id="@+id/add_to_playlist_buton"
             style="@style/PlayerSecondaryButton"
-            app:layout_constraintTop_toTopOf="@id/playButon"
-            app:layout_constraintBottom_toBottomOf="@id/playButon"
-            app:layout_constraintStart_toStartOf="@+id/mainLeftBorder"
+            app:layout_constraintTop_toTopOf="@id/player_play_buton"
+            app:layout_constraintBottom_toBottomOf="@id/player_play_buton"
+            app:layout_constraintStart_toStartOf="@+id/main_left_border"
             android:src="@drawable/add_to_playlist" />
 
         <ImageButton
-            android:id="@+id/addToFavoriteButon"
+            android:id="@+id/add_to_favorite_buton"
             style="@style/PlayerSecondaryButton"
-            app:layout_constraintTop_toTopOf="@id/playButon"
-            app:layout_constraintBottom_toBottomOf="@id/playButon"
-            app:layout_constraintEnd_toStartOf="@+id/mainRightBorder"
+            app:layout_constraintTop_toTopOf="@id/player_play_buton"
+            app:layout_constraintBottom_toBottomOf="@id/player_play_buton"
+            app:layout_constraintEnd_toStartOf="@+id/main_right_border"
             android:src="@drawable/add_to_favorite" />
 
         <TextView
@@ -128,118 +128,123 @@
             android:letterSpacing="0"
             android:maxLines="1"
             android:textColor="@color/placeholder_text"
-            app:layout_constraintEnd_toStartOf="@+id/rightBorder"
-            app:layout_constraintStart_toStartOf="@+id/leftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/playButon"
+            app:layout_constraintEnd_toStartOf="@+id/right_border"
+            app:layout_constraintStart_toStartOf="@+id/left_border"
+            app:layout_constraintTop_toBottomOf="@+id/player_play_buton"
             tools:text="0:30"/>
 
         <TextView
-            android:id="@+id/musicDuration"
+            android:id="@+id/music_duration"
             style="@style/MusicInfo"
             android:layout_marginTop="39dp"
-            app:layout_constraintEnd_toEndOf="@id/rightBorder"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintTop_toBottomOf="@+id/timer"
             tools:text="@string/music_duration"/>
 
         <TextView
-            android:id="@+id/albumName"
+            android:id="@+id/album_name"
             style="@style/MusicInfo"
             app:layout_constraintTag="albumText"
-            app:layout_constraintEnd_toEndOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@+id/musicDuration"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
+            app:layout_constraintTop_toBottomOf="@+id/music_duration"
             tools:text="@string/album_name"/>
 
         <TextView
-            android:id="@+id/musicYear"
+            android:id="@+id/music_year"
             style="@style/MusicInfo"
             app:layout_constraintTag="yearText"
-            app:layout_constraintEnd_toEndOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@+id/albumName"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
+            app:layout_constraintTop_toBottomOf="@+id/album_name"
             tools:text="@string/music_year"/>
 
         <TextView
-            android:id="@+id/musicGenre"
+            android:id="@+id/music_genre"
             style="@style/MusicInfo"
             app:layout_constraintTag="genreText"
-            app:layout_constraintEnd_toEndOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@+id/musicYear"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
+            app:layout_constraintTop_toBottomOf="@+id/music_year"
             tools:text="@string/music_genre"/>
 
         <TextView
-            android:id="@+id/musicCountry"
+            android:id="@+id/music_country"
             style="@style/MusicInfo"
             app:layout_constraintTag="countryText"
-            app:layout_constraintEnd_toEndOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@+id/musicGenre"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
+            app:layout_constraintTop_toBottomOf="@+id/music_genre"
             tools:text="@string/music_country"/>
 
         <TextView
-            style="@style/MusicInfoText"
+            style="@style/MusicInfo"
             android:layout_marginTop="39dp"
-            app:layout_constraintStart_toStartOf="@id/leftBorder"
+            android:textColor="@color/music_info_text"
+            app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@+id/timer"
             android:text="@string/music_duration"/>
 
         <TextView
             android:id="@+id/album"
-            style="@style/MusicInfoText"
+            style="@style/MusicInfo"
             app:layout_constraintTag="album"
-            app:layout_constraintStart_toStartOf="@id/leftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/musicDuration"
+            android:textColor="@color/music_info_text"
+            app:layout_constraintStart_toStartOf="@id/left_border"
+            app:layout_constraintTop_toBottomOf="@+id/music_duration"
             android:text="@string/album_name"/>
 
         <TextView
-            style="@style/MusicInfoText"
+            style="@style/MusicInfo"
             android:id="@+id/year"
             app:layout_constraintTag="year"
-            app:layout_constraintStart_toStartOf="@id/leftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/albumName"
+            android:textColor="@color/music_info_text"
+            app:layout_constraintStart_toStartOf="@id/left_border"
+            app:layout_constraintTop_toBottomOf="@+id/album_name"
             android:text="@string/music_year"/>
 
         <TextView
             android:id="@+id/genre"
-            style="@style/MusicInfoText"
+            style="@style/MusicInfo"
             app:layout_constraintTag="genre"
-            app:layout_constraintStart_toStartOf="@id/leftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/musicYear"
+            android:textColor="@color/music_info_text"
+            app:layout_constraintStart_toStartOf="@id/left_border"
+            app:layout_constraintTop_toBottomOf="@+id/music_year"
             android:text="@string/music_genre"/>
 
         <TextView
             android:id="@+id/country"
-            style="@style/MusicInfoText"
+            style="@style/MusicInfo"
             app:layout_constraintTag="country"
-            app:layout_constraintStart_toStartOf="@id/leftBorder"
-            app:layout_constraintTop_toBottomOf="@+id/musicGenre"
+            android:textColor="@color/music_info_text"
+            app:layout_constraintStart_toStartOf="@id/left_border"
+            app:layout_constraintTop_toBottomOf="@+id/music_genre"
             android:text="@string/music_country"/>
 
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/albumNameGroup"
+            android:id="@+id/album_name_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="albumName, album"/>
+            app:constraint_referenced_ids="album_name, album"/>
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/yearGroup"
+            android:id="@+id/year_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="musicYear, year"/>
+            app:constraint_referenced_ids="music_year, year"/>
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/genreGroup"
+            android:id="@+id/genre_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="musicGenre, genre"/>
+            app:constraint_referenced_ids="music_genre, genre"/>
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/countryGroup"
+            android:id="@+id/country_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="musicCountry, country"/>
+            app:constraint_referenced_ids="music_country, country"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
