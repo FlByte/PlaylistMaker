@@ -16,7 +16,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/back_button"
-            style="@style/BackButton"/>
+            style="@style/BackButton" />
 
         <TextView
             android:text="@string/search_button"
@@ -117,7 +117,7 @@
             android:id="@+id/clear_history"
             style="@style/SearchButton"
             android:text="@string/clear"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

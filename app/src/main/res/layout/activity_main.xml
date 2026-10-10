@@ -17,8 +17,7 @@
         android:id="@+id/search_button"
         app:icon="@drawable/search"
         android:text="@string/search_button"
-        style="@style/MainButtonStyle"
-/>
+        style="@style/MainButtonStyle"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/library_button"

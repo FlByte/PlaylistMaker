@@ -20,4 +20,9 @@
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="ethernet_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="to_long_query">Запрос слишком длинный</string>
+    <string name="music_duration">Длительность</string>
+    <string name="album_name">Альбом</string>
+    <string name="music_year">Год</string>
+    <string name="music_genre">Жанр</string>
+    <string name="music_country">Страна</string>
 </resources>
