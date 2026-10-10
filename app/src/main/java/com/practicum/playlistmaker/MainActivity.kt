@@ -9,6 +9,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
+    private val clickDebouncer = ClickDebouncer()
+    private lateinit var searchButton: Button
+    private lateinit var libraryButton: Button
+    private lateinit var settingsButton: Button
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -20,25 +27,34 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val searchButton = findViewById<Button>(R.id.search_button)
-        val libraryButton = findViewById<Button>(R.id.library_button)
-        val settingsButton = findViewById<Button>(R.id.settings_button)
+        searchButton = findViewById(R.id.search_button)
+        libraryButton = findViewById(R.id.library_button)
+        settingsButton = findViewById(R.id.settings_button)
 
         searchButton.setOnClickListener {
-            val displayIntent = Intent(this, SearchActivity::class.java)
-            startActivity(displayIntent)
+            if (clickDebouncer.clickDebounce()) {
+                val displayIntent = Intent(this, SearchActivity::class.java)
+                startActivity(displayIntent)
+            }
         }
 
         libraryButton.setOnClickListener {
-            val displayIntent = Intent(this, LibraryActivity::class.java)
-            startActivity(displayIntent)
+            if (clickDebouncer.clickDebounce()) {
+                val displayIntent = Intent(this, LibraryActivity::class.java)
+                startActivity(displayIntent)
+            }
         }
 
         settingsButton.setOnClickListener {
-            val displayIntent = Intent(this, SettingsActivity::class.java)
-            startActivity(displayIntent)
+            if (clickDebouncer.clickDebounce()) {
+                val displayIntent = Intent(this, SettingsActivity::class.java)
+                startActivity(displayIntent)
+            }
         }
+    }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        clickDebouncer.clear()
     }
 }

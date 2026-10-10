@@ -1,7 +1,9 @@
 package com.practicum.playlistmaker
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Track (
     val trackId: Long,
     val trackName: String,
@@ -12,4 +14,5 @@ data class Track (
     val releaseDate: String? = null,
     val primaryGenreName: String? = null,
     val country: String? = null,
-) : Serializable
+    val previewUrl: String? = null
+) : Parcelable
