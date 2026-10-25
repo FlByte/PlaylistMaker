@@ -2,15 +2,17 @@ package com.practicum.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -31,11 +33,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 const val HISTORY_PREFERENCES = "search_history"
-
+const val TRACK_KEY = "track"
+private const val SEARCH_DEBOUNCE_DELAY = 2000L
 class SearchActivity : AppCompatActivity() {
 
     private var searchString: String = SEARCH_STRING
 
+    private val clickDebouncer = ClickDebouncer()
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
     private var iTunesBaseUrl = "https://itunes.apple.com"
 
     private val retrofit = Retrofit.Builder()
@@ -55,6 +60,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: Button
     private lateinit var historyText: TextView
     private lateinit var searchHistory: SearchHistory
+    private lateinit var progressBar: ProgressBar
     private val trackList = ArrayList<Track>()
     private val searchAdapter = MusicAdapter(trackList)
     private val historyList = ArrayList<Track>()
@@ -79,6 +85,7 @@ class SearchActivity : AppCompatActivity() {
         reloadButton = findViewById(R.id.reload_button)
         clearHistoryButton = findViewById(R.id.clear_history)
         historyText = findViewById(R.id.history_text)
+        progressBar = findViewById(R.id.progress_bar)
 
         backButton.setOnClickListener {
             finish()
@@ -100,15 +107,19 @@ class SearchActivity : AppCompatActivity() {
         }
 
         reloadButton.setOnClickListener {
-            findTracks()
+            if(clickDebouncer.clickDebounce()){
+                findTracks()
+            }
         }
 
         clearHistoryButton.setOnClickListener {
-            historyList.clear()
-            searchHistory.clearHistory()
-            historyAdapter.notifyDataSetChanged()
-            clearHistoryButton.visibility = View.GONE
-            historyText.visibility = View.GONE
+            if(clickDebouncer.clickDebounce()){
+                historyList.clear()
+                searchHistory.clearHistory()
+                historyAdapter.notifyDataSetChanged()
+                clearHistoryButton.visibility = View.GONE
+                historyText.visibility = View.GONE
+            }
         }
 
         inputEditText.doOnTextChanged { text, _, _, _ ->
@@ -122,6 +133,8 @@ class SearchActivity : AppCompatActivity() {
             } else {
                 hideHistory()
             }
+
+            searchDebounce()
         }
 
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
@@ -133,34 +146,42 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchAdapter.setOnItemClickListener { track ->
-            searchHistory.addTrackToHistory(track)
+            if(clickDebouncer.clickDebounce()) {
+                searchHistory.addTrackToHistory(track)
 
-            val displayIntent = Intent(this, PlayerActivity::class.java).apply {
-                putExtra("track", track)
+                val displayIntent = Intent(this, PlayerActivity::class.java).apply {
+                    putExtra(TRACK_KEY, track)
+                }
+                startActivity(displayIntent)
             }
-            startActivity(displayIntent)
         }
         historyAdapter.setOnItemClickListener { track ->
-            searchHistory.addTrackToHistory(track)
-            showHistory()
+            if(clickDebouncer.clickDebounce()){
+                searchHistory.addTrackToHistory(track)
+                showHistory()
 
-            val displayIntent = Intent(this, PlayerActivity::class.java).apply {
-                putExtra("track", track)
+                val displayIntent = Intent(this, PlayerActivity::class.java).apply {
+                    putExtra(TRACK_KEY, track)
+                }
+                startActivity(displayIntent)
             }
-            startActivity(displayIntent)
         }
 
         musicRecyclerView = findViewById(R.id.music_recycler_view)
 
         musicRecyclerView.adapter = searchAdapter
+    }
 
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                findTracks()
-                true
-            }
-            false
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        clickDebouncer.clear()
+    }
+
+    private val searchRunnable = Runnable { findTracks() }
+
+    private fun searchDebounce() {
+        mainThreadHandler.removeCallbacks(searchRunnable)
+        mainThreadHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun showHistory() {
@@ -177,8 +198,6 @@ class SearchActivity : AppCompatActivity() {
             reloadButton.visibility = View.GONE
 
             musicRecyclerView.adapter = historyAdapter
-
-
         } else {
             hideHistory()
         }
@@ -197,6 +216,8 @@ class SearchActivity : AppCompatActivity() {
     private fun findTracks() {
         val query = inputEditText.text.toString().trim()
         if (query.isNotEmpty() && query.length <= 200) {
+            musicRecyclerView.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
             errorText.visibility = View.GONE
             errorImage.visibility = View.GONE
             reloadButton.visibility = View.GONE
@@ -211,6 +232,8 @@ class SearchActivity : AppCompatActivity() {
                         trackList.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
                             trackList.addAll(response.body()?.results!!)
+                            musicRecyclerView.visibility = View.VISIBLE
+                            progressBar.visibility = View.GONE
                             searchAdapter.notifyDataSetChanged()
                         }
                         if (trackList.isEmpty()) {
@@ -233,6 +256,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showMessage(text: String, ethernetError: Boolean) {
         if (text.isNotEmpty()) {
+            musicRecyclerView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
             errorText.visibility = View.VISIBLE
             errorImage.visibility = View.VISIBLE
             clearHistoryButton.visibility = View.GONE
