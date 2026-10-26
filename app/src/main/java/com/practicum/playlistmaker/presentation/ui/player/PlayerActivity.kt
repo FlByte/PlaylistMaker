@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.player
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -18,23 +18,24 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-const val PLAYER_REFRESH_DELAY = 500L
+private const val PLAYER_REFRESH_DELAY = 500L
+private const val TRACK_KEY = "track"
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var playButton: ImageButton
-    private lateinit var addToPlaylistButton: ImageButton
-    private lateinit var addToFavoriteButton: ImageButton
     private lateinit var timer: TextView
+    private val positionFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
 
-    private val timeFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
     private val mediaPlayer = MediaPlayer()
     private val mainThreadHandler = Handler(Looper.getMainLooper())
     private var timerRunnable: Runnable? = null
-
+    private var playerState = STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,20 +47,15 @@ class PlayerActivity : AppCompatActivity() {
             insets
         }
 
-        val backButton = findViewById<Button>(R.id.player_back_button)
-        backButton.setOnClickListener {
-            finish()
-        }
+        findViewById<Button>(R.id.player_back_button).setOnClickListener { finish() }
 
-        val track = IntentCompat.getParcelableExtra(intent, "track", Track::class.java)
+        val track = IntentCompat.getParcelableExtra(intent, TRACK_KEY, Track::class.java)
 
         val artwork = findViewById<ImageView>(R.id.player_album_img)
         val trackName = findViewById<TextView>(R.id.player_track_name)
         val artistName = findViewById<TextView>(R.id.player_artist_name)
         playButton = findViewById(R.id.player_play_buton)
         playButton.isEnabled = false
-        addToPlaylistButton = findViewById(R.id.add_to_playlist_buton)
-        addToFavoriteButton = findViewById(R.id.add_to_favorite_buton)
         timer = findViewById(R.id.timer)
         val musicDuration = findViewById<TextView>(R.id.music_duration)
         val albumName = findViewById<TextView>(R.id.album_name)
@@ -72,62 +68,51 @@ class PlayerActivity : AppCompatActivity() {
         val countryGroup = findViewById<Group>(R.id.country_group)
 
         Glide.with(this)
-            .load(track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
+            .load(track?.artworkUrl512)
             .placeholder(R.drawable.music_placeholder)
             .centerCrop()
             .transform(RoundedCorners(
                 TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     2f,
-                    resources.displayMetrics).toInt()
+                    resources.displayMetrics
+                ).toInt()
             ))
             .into(artwork)
 
         trackName.text = track?.trackName
         artistName.text = track?.artistName
-        musicDuration.text = timeFormat.format(track?.trackTimeMillis)
-        timer.text = timeFormat.format(0L)
+        musicDuration.text = track?.formattedTime ?: "00:00"
+        timer.text = positionFormat.format(0L)
 
-        if (track?.previewUrl != null) {
-            preparePlayer(track.previewUrl)
-        }
-
+        track?.previewUrl?.let { preparePlayer(it) }
         playButton.setOnClickListener { playbackControl() }
 
-        if (track?.collectionName != null) {
-            albumName.text = track.collectionName
+        albumNameGroup.visibility = View.GONE
+        track?.collectionName?.let {
+            albumName.text = it
             albumNameGroup.visibility = View.VISIBLE
-        } else {
-            albumNameGroup.visibility = View.GONE
         }
-
-        if (track?.releaseDate != null) {
-            musicYear.text = track.releaseDate.take(4)
+        yearGroup.visibility = View.GONE
+        track?.releaseYear?.let {
+            musicYear.text = it
             yearGroup.visibility = View.VISIBLE
-        } else {
-            yearGroup.visibility = View.GONE
         }
-
-        if (track?.primaryGenreName != null) {
-            musicGenre.text = track.primaryGenreName
+        genreGroup.visibility = View.GONE
+        track?.primaryGenreName?.let {
+            musicGenre.text = it
             genreGroup.visibility = View.VISIBLE
-        } else {
-            genreGroup.visibility = View.GONE
         }
-
-        if (track?.country != null) {
-            musicCountry.text = track.country
+        countryGroup.visibility = View.GONE
+        track?.country?.let {
+            musicCountry.text = it
             countryGroup.visibility = View.VISIBLE
-        } else {
-            countryGroup.visibility = View.GONE
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (playerState == STATE_PLAYING) {
-            pausePlayer()
-        }
+        if (playerState == STATE_PLAYING) pausePlayer()
     }
 
     override fun onDestroy() {
@@ -135,14 +120,13 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.release()
         super.onDestroy()
     }
-    companion object  {
+
+    companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
     }
-
-    private var playerState = STATE_DEFAULT
 
     private fun preparePlayer(url: String) {
         try {
@@ -151,13 +135,12 @@ class PlayerActivity : AppCompatActivity() {
             mediaPlayer.setOnPreparedListener {
                 playButton.isEnabled = true
                 playerState = STATE_PREPARED
-                playButton.isEnabled = true
             }
             mediaPlayer.setOnCompletionListener {
                 playButton.setBackgroundResource(R.drawable.play)
                 playerState = STATE_PREPARED
                 timerRunnable?.let { mainThreadHandler.removeCallbacks(it) }
-                timer.text = timeFormat.format(0L)
+                timer.text = positionFormat.format(0L)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -180,7 +163,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun playbackControl() {
-        when(playerState) {
+        when (playerState) {
             STATE_PLAYING -> pausePlayer()
             STATE_PREPARED, STATE_PAUSED -> startPlayer()
         }
@@ -188,13 +171,11 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun startTimer() {
         timerRunnable?.let { mainThreadHandler.removeCallbacks(it) }
-        timer.text = timeFormat.format(mediaPlayer.currentPosition)
-
+        timer.text = positionFormat.format(mediaPlayer.currentPosition)
         timerRunnable = object : Runnable {
             override fun run() {
-                timer.text = timeFormat.format(mediaPlayer.currentPosition)
-
-                if ((playerState == STATE_PLAYING) && (mediaPlayer.currentPosition > 0)) {
+                timer.text = positionFormat.format(mediaPlayer.currentPosition)
+                if (playerState == STATE_PLAYING && mediaPlayer.currentPosition > 0) {
                     mainThreadHandler.postDelayed(this, PLAYER_REFRESH_DELAY)
                 }
             }
