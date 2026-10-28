@@ -29,6 +29,8 @@ import com.practicum.playlistmaker.domain.api.SearchTracksInteractor
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.ui.player.PlayerActivity
 import com.practicum.playlistmaker.presentation.util.ClickDebouncer
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 private const val SEARCH_DEBOUNCE_DELAY = 2000L
 private const val TRACK_KEY = "track"
@@ -281,6 +283,8 @@ class SearchActivity : AppCompatActivity() {
             private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
             private val albumImg = itemView.findViewById<ImageView>(R.id.album_img)
 
+            private val timeFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
+
             init {
                 itemView.setOnClickListener {
                     val position = bindingAdapterPosition
@@ -293,7 +297,7 @@ class SearchActivity : AppCompatActivity() {
             fun bind(model: Track) {
                 trackName.text = model.trackName
                 artistName.text = model.artistName
-                trackTime.text = model.formattedTime
+                trackTime.text = timeFormat.format(model.trackTimeMillis)
                 Glide.with(itemView)
                     .load(model.artworkUrl100)
                     .placeholder(R.drawable.music_placeholder)

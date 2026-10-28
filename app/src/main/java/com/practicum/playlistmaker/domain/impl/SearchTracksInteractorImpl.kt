@@ -1,7 +1,5 @@
 package com.practicum.playlistmaker.domain.impl
 
-import com.practicum.playlistmaker.data.dto.TrackDto
-import com.practicum.playlistmaker.data.mapper.toDomainOrNull
 import com.practicum.playlistmaker.domain.api.SearchTracksInteractor
 import com.practicum.playlistmaker.domain.api.TracksRepository
 import com.practicum.playlistmaker.domain.model.Track
@@ -20,9 +18,7 @@ class SearchTracksInteractorImpl(
             return
         }
         repository.searchTracks(query, object : TracksRepository.SearchCallback {
-            override fun onSuccess(tracks: List<TrackDto>) {
-                onSuccess(tracks.mapNotNull { it.toDomainOrNull() })
-            }
+            override fun onSuccess(tracks: List<Track>) = onSuccess(tracks)
             override fun onError() = onError()
         })
     }

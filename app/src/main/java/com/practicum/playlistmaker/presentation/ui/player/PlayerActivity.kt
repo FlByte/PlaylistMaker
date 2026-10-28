@@ -82,7 +82,7 @@ class PlayerActivity : AppCompatActivity() {
 
         trackName.text = track?.trackName
         artistName.text = track?.artistName
-        musicDuration.text = track?.formattedTime ?: "00:00"
+        musicDuration.text = positionFormat.format(track?.trackTimeMillis ?: 0L)
         timer.text = positionFormat.format(0L)
 
         track?.previewUrl?.let { preparePlayer(it) }

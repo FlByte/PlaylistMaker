@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.data.repository
 
 import com.practicum.playlistmaker.data.dto.TrackSearchResponse
+import com.practicum.playlistmaker.data.mapper.toDomainOrNull
 import com.practicum.playlistmaker.data.network.ITunesApi
 import com.practicum.playlistmaker.domain.api.TracksRepository
 import retrofit2.Call
@@ -16,8 +17,9 @@ class TracksRepositoryImpl(private val api: ITunesApi) : TracksRepository {
                 response: Response<TrackSearchResponse>
             ) {
                 val body = response.body()
-                if (response.code() == 200 && body != null) {
-                    callback.onSuccess(body.results)
+                if (response.isSuccessful && body != null) {
+                    val tracks = body.results.mapNotNull { it.toDomainOrNull() }
+                    callback.onSuccess(tracks)
                 } else {
                     callback.onError()
                 }
