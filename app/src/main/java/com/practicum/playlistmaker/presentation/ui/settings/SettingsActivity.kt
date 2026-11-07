@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -9,8 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.api.ThemeInteractor
 
 class SettingsActivity : AppCompatActivity() {
+
+    private val themeInteractor: ThemeInteractor = Creator.provideThemeInteractor()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,49 +28,32 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val backButton = findViewById<Button>(R.id.back_button)
-
-        backButton.setOnClickListener {
-            finish()
-        }
+        findViewById<Button>(R.id.back_button).setOnClickListener { finish() }
 
         val themeSwitcher = findViewById<SwitchCompat>(R.id.theme_switcher)
-        val shareButton = findViewById<Button>(R.id.share_button)
-        val supportButton = findViewById<Button>(R.id.support_button)
-        val userAgreement = findViewById<Button>(R.id.user_agreement_button)
-
-        val app = applicationContext as App
-
-        themeSwitcher.isChecked = app.getCurrntTheme()
-
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            app.switchTheme(checked)
+        themeSwitcher.isChecked = themeInteractor.getTheme()
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            themeInteractor.setTheme(checked)
         }
 
-        shareButton.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        findViewById<Button>(R.id.share_button).setOnClickListener {
+            startActivity(Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.practicum_link)
-                )
-            }
-            startActivity(shareIntent)
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.practicum_link))
+            })
         }
 
-        supportButton.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
+        findViewById<Button>(R.id.support_button).setOnClickListener {
+            startActivity(Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.email_text))
-            }
-            startActivity(shareIntent)
+            })
         }
 
-        userAgreement.setOnClickListener {
-            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.user_agreement_url)))
-            startActivity(browseIntent)
+        findViewById<Button>(R.id.user_agreement_button).setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.user_agreement_url))))
         }
     }
-
-
 }

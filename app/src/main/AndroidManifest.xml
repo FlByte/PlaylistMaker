@@ -15,16 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
-            android:name=".PlayerActivity"
+            android:name=".presentation.ui.player.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".presentation.ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".LibraryActivity"
+            android:name=".presentation.ui.library.LibraryActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".presentation.ui.settings.SettingsActivity"
             android:exported="false" />
     </application>
 

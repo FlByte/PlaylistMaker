@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,14 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.library.LibraryActivity
+import com.practicum.playlistmaker.presentation.ui.search.SearchActivity
+import com.practicum.playlistmaker.presentation.ui.settings.SettingsActivity
+import com.practicum.playlistmaker.presentation.util.ClickDebouncer
 
 class MainActivity : AppCompatActivity() {
 
     private val clickDebouncer = ClickDebouncer()
-    private lateinit var searchButton: Button
-    private lateinit var libraryButton: Button
-    private lateinit var settingsButton: Button
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,28 +28,21 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        searchButton = findViewById(R.id.search_button)
-        libraryButton = findViewById(R.id.library_button)
-        settingsButton = findViewById(R.id.settings_button)
-
-        searchButton.setOnClickListener {
+        findViewById<Button>(R.id.search_button).setOnClickListener {
             if (clickDebouncer.clickDebounce()) {
-                val displayIntent = Intent(this, SearchActivity::class.java)
-                startActivity(displayIntent)
+                startActivity(Intent(this, SearchActivity::class.java))
             }
         }
 
-        libraryButton.setOnClickListener {
+        findViewById<Button>(R.id.library_button).setOnClickListener {
             if (clickDebouncer.clickDebounce()) {
-                val displayIntent = Intent(this, LibraryActivity::class.java)
-                startActivity(displayIntent)
+                startActivity(Intent(this, LibraryActivity::class.java))
             }
         }
 
-        settingsButton.setOnClickListener {
+        findViewById<Button>(R.id.settings_button).setOnClickListener {
             if (clickDebouncer.clickDebounce()) {
-                val displayIntent = Intent(this, SettingsActivity::class.java)
-                startActivity(displayIntent)
+                startActivity(Intent(this, SettingsActivity::class.java))
             }
         }
     }
