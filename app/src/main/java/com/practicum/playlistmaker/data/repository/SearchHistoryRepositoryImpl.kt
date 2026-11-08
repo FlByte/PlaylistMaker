@@ -15,5 +15,8 @@ class SearchHistoryRepositoryImpl(
 
     override fun addTrack(track: Track) = storage.add(track.toDto())
 
+    override fun getTrackById(trackId: Long): Track? =
+        storage.get().firstOrNull() { it.trackId == trackId }?.toDomainOrNull()
+
     override fun clearHistory() = storage.clear()
 }

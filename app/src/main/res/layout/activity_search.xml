@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/settings_background"
-    tools:context=".SearchActivity">
+    android:background="@color/settings_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,7 +64,7 @@
             android:singleLine="true"/>
 
         <ImageView
-            android:id="@+id/clear_text"
+            android:id="@+id/clear_text_button"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:src="@drawable/clear"
@@ -107,14 +106,14 @@
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toTopOf="@+id/clear_history"
+            app:layout_constraintBottom_toTopOf="@+id/clear_history_button"
             app:layout_constraintHeight_max="wrap"
             app:layout_constraintTop_toBottomOf="@+id/history_text"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintVertical_bias="0.0" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/clear_history"
+            android:id="@+id/clear_history_button"
             style="@style/SearchButton"
             android:text="@string/clear"
             android:visibility="gone"
