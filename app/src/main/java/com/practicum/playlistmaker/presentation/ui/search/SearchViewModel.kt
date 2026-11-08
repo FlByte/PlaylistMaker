@@ -87,6 +87,7 @@ class SearchViewModel(
 
     private fun findTracks() {
         if (query.value.isNullOrEmpty()) return
+        cancelSearch()
         state.postValue(SearchUiState.Loading)
         searchTracksInteractor.search(
             query.value!!,
