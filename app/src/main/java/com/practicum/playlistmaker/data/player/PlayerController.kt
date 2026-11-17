@@ -4,7 +4,7 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 
-class PlayerController {
+class PlayerController(private val mediaPlayer: MediaPlayer) {
 
     interface Listener {
         fun onPrepared()
@@ -13,7 +13,6 @@ class PlayerController {
         fun onError()
     }
 
-    private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
 
     private var listener: Listener? = null

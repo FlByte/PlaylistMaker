@@ -5,10 +5,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.data.dto.TrackDto
 
-class SearchHistoryStorage(private val prefs: SharedPreferences) {
+class SearchHistoryStorage(
+    private val prefs: SharedPreferences,
+    private val gson: Gson) {
     private val HISTORY_KEY = "history_tracks"
     private val MAX_HISTORY_SIZE = 10
-    private val gson = Gson()
 
     fun save(tracks: List<TrackDto>) {
         prefs.edit().putString(HISTORY_KEY, gson.toJson(tracks)).apply()

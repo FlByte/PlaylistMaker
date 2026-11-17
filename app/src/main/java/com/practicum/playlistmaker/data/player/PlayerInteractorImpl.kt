@@ -3,11 +3,12 @@ package com.practicum.playlistmaker.data.player
 import android.os.Handler
 import android.os.Looper
 import com.practicum.playlistmaker.domain.model.Track
-import com.practicum.playlistmaker.domain.player.api.PlayerInteractor
+import com.practicum.playlistmaker.domain.api.PlayerInteractor
 
-class PlayerInteractorImpl : PlayerInteractor {
+class PlayerInteractorImpl(
+    private val controller: PlayerController
+) : PlayerInteractor {
 
-    private val controller = PlayerController()
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private var callback: PlayerInteractor.Callback? = null

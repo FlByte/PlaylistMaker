@@ -12,8 +12,10 @@ constraintlayout = "2.2.1"
 glide = "5.0.5"
 gson = "2.14.0"
 retrofit = "2.9.0"
+koin = "3.3.0"
 
 [libraries]
+koin-android = {group = "io.insert-koin", name = "koin-android", version.ref = "koin"}
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
