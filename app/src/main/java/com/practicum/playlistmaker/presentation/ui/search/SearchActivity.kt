@@ -21,6 +21,7 @@ import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.ui.player.PlayerActivity
 import com.practicum.playlistmaker.presentation.util.ClickDebouncer
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -29,7 +30,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
     private val viewModel: SearchViewModel by viewModel()
-    private val clickDebouncer = ClickDebouncer()
+    private val clickDebouncer: ClickDebouncer by inject()
     private val searchAdapter = MusicAdapter(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {

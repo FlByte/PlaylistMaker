@@ -44,7 +44,7 @@ val dataModule = module {
     single { ThemeStorage(get(SettingsPrefs)) }
 
     factory<MediaPlayer> { MediaPlayer() }
-    single { PlayerController(get()) }
+    factory { PlayerController(get()) }
 
     single<() -> Configuration> {
         { androidContext().resources.configuration }
