@@ -11,6 +11,6 @@ class SearchHistoryInteractorImpl(
     override fun getHistory(): List<Track> = repository.getHistory()
 
     override fun addTrack(track: Track) = repository.addTrack(track)
-
+    override fun getTrackById(trackId: Long): Track? = repository.getTrackById(trackId)
     override fun clearHistory() = repository.clearHistory()
 }

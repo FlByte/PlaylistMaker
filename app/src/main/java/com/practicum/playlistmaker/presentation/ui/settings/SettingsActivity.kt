@@ -5,35 +5,39 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.domain.api.ThemeInteractor
+import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
-    private val themeInteractor: ThemeInteractor = Creator.provideThemeInteractor()
+    private lateinit var binding: ActivitySettingsBinding
+    private val viewModel: SettingsViewModel by viewModels { SettingsViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.settings) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        findViewById<Button>(R.id.back_button).setOnClickListener { finish() }
+        binding.backButton.setOnClickListener { finish() }
 
-        val themeSwitcher = findViewById<SwitchCompat>(R.id.theme_switcher)
-        themeSwitcher.isChecked = themeInteractor.getTheme()
-        themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            themeInteractor.setTheme(checked)
+
+        viewModel.observeTheme().observe(this) {
+            binding.themeSwitcher.isChecked = it
+        }
+
+        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            viewModel.setTheme(checked)
         }
 
         findViewById<Button>(R.id.share_button).setOnClickListener {

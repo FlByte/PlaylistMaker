@@ -91,7 +91,7 @@
             tools:text="The Beatles" />
 
         <ImageButton
-            android:id="@+id/player_play_buton"
+            android:id="@+id/player_play_button"
             android:layout_width="83dp"
             android:layout_height="83dp"
             android:layout_marginTop="38dp"
@@ -102,18 +102,18 @@
             app:layout_constraintTop_toBottomOf="@+id/player_artist_name" />
 
         <ImageButton
-            android:id="@+id/add_to_playlist_buton"
+            android:id="@+id/add_to_playlist_button"
             style="@style/PlayerSecondaryButton"
-            app:layout_constraintTop_toTopOf="@id/player_play_buton"
-            app:layout_constraintBottom_toBottomOf="@id/player_play_buton"
+            app:layout_constraintTop_toTopOf="@id/player_play_button"
+            app:layout_constraintBottom_toBottomOf="@id/player_play_button"
             app:layout_constraintStart_toStartOf="@+id/main_left_border"
             android:src="@drawable/add_to_playlist" />
 
         <ImageButton
-            android:id="@+id/add_to_favorite_buton"
+            android:id="@+id/add_to_favorite_button"
             style="@style/PlayerSecondaryButton"
-            app:layout_constraintTop_toTopOf="@id/player_play_buton"
-            app:layout_constraintBottom_toBottomOf="@id/player_play_buton"
+            app:layout_constraintTop_toTopOf="@id/player_play_button"
+            app:layout_constraintBottom_toBottomOf="@id/player_play_button"
             app:layout_constraintEnd_toStartOf="@+id/main_right_border"
             android:src="@drawable/add_to_favorite" />
 
@@ -130,7 +130,7 @@
             android:textColor="@color/placeholder_text"
             app:layout_constraintEnd_toStartOf="@+id/right_border"
             app:layout_constraintStart_toStartOf="@+id/left_border"
-            app:layout_constraintTop_toBottomOf="@+id/player_play_buton"
+            app:layout_constraintTop_toBottomOf="@+id/player_play_button"
             tools:text="0:30"/>
 
         <TextView
