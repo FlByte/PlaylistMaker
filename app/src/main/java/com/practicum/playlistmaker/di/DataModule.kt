@@ -43,7 +43,7 @@ val dataModule = module {
     single { SearchHistoryStorage(get(HistoryPrefs), get()) }
     single { ThemeStorage(get(SettingsPrefs)) }
 
-    factory<MediaPlayer> { MediaPlayer() }
+    single<MediaPlayer> { MediaPlayer() }
     factory { PlayerController(get()) }
 
     single<() -> Configuration> {

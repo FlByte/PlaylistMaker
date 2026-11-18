@@ -11,8 +11,8 @@ import com.practicum.playlistmaker.domain.api.PlayerInteractor
 import org.koin.dsl.module
 
 val interactorModule = module {
-    single<SearchTracksInteractor> { SearchTracksInteractorImpl(get()) }
-    single<SearchHistoryInteractor> { SearchHistoryInteractorImpl(get()) }
-    single<ThemeInteractor> { ThemeInteractorImpl(get()) }
+    factory<SearchTracksInteractor> { SearchTracksInteractorImpl(get()) }
+    factory<SearchHistoryInteractor> { SearchHistoryInteractorImpl(get()) }
+    factory<ThemeInteractor> { ThemeInteractorImpl(get()) }
     factory<PlayerInteractor> { PlayerInteractorImpl(get()) }
 }
