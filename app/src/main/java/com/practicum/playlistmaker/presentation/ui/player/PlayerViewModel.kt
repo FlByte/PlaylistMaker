@@ -4,14 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.createSavedStateHandle
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.domain.api.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.model.Track
-import com.practicum.playlistmaker.domain.player.api.PlayerInteractor
+import com.practicum.playlistmaker.domain.api.PlayerInteractor
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -32,24 +27,6 @@ class PlayerViewModel(
     private val historyInteractor: SearchHistoryInteractor,
     private val playerInteractor: PlayerInteractor
 ): ViewModel() {
-
-    companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val savedStateHandle = createSavedStateHandle()
-                PlayerViewModel(
-                    savedStateHandle,
-                    Creator.provideSearchHistoryInteractor(),
-                            Creator.providePlayerInteractor()
-                )
-            }
-        }
-    }
 
     private val trackId: Long = savedStateHandle.get<Long>(TRACK_ID_KEY) ?: -1L
     private val track: Track? = if (trackId >= 0) historyInteractor.getTrackById(trackId) else null

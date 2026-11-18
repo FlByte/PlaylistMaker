@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.domain.api.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.api.SearchTracksInteractor
 import com.practicum.playlistmaker.domain.model.Track
@@ -111,16 +107,5 @@ class SearchViewModel(
     override fun onCleared() {
         cancelSearch()
         super.onCleared()
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    Creator.provideSearchTracksInteractor(),
-                    Creator.provideSearchHistoryInteractor()
-                )
-            }
-        }
     }
 }

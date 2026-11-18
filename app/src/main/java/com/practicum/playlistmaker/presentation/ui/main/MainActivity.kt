@@ -11,10 +11,12 @@ import com.practicum.playlistmaker.presentation.ui.library.LibraryActivity
 import com.practicum.playlistmaker.presentation.ui.search.SearchActivity
 import com.practicum.playlistmaker.presentation.ui.settings.SettingsActivity
 import com.practicum.playlistmaker.presentation.util.ClickDebouncer
+import org.koin.android.ext.android.inject
+import kotlin.getValue
 
 class MainActivity : AppCompatActivity() {
 
-    private val clickDebouncer = ClickDebouncer()
+    private val clickDebouncer: ClickDebouncer by inject()
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
